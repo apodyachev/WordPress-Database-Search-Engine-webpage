@@ -1,0 +1,71 @@
+Search the Film Database
+<form method="POST">
+  <input type="text" name="address">
+  <input type="submit" name="go" method="post">
+</form>
+[php]
+error_reporting(E_ALL);
+ini_set( 'display_errors','1');
+if(isset($_POST['go'])){
+hello();
+}
+function hello(){
+$value = $_POST['address'];
+echo "search results for: $value\n";
+global $wpdb;
+$wpdb->show_errors();
+$wpdb->query("USE vcuw2938212664;");
+$string = "SELECT *
+FROM `documentaries`
+WHERE `Original_Title` LIKE %s
+OR `English_Title` LIKE %s
+OR `Call_Number` LIKE %s
+OR `Director` LIKE %s
+OR `Abstract` LIKE %s
+UNION
+SELECT *
+FROM `films`
+WHERE `Original_Title` LIKE %s
+OR `English_Title` LIKE %s
+OR `Call_Number` LIKE %s
+OR `Director` LIKE %s
+OR `Abstract` LIKE %s;";
+$query = $wpdb->prepare($string, "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%");
+$results = $wpdb->get_results($query);
+echo '<table border="1">';
+echo "<tr>";
+echo "<th>Language</th>";
+echo "<th>Language_Tracks</th>";
+echo "<th>Original_Title</th>";
+echo "<th>English_Title</th>";
+echo "<th>Call_Number</th>";
+echo "<th>Director</th>";
+echo "<th>Year</th>";
+echo "<th>Copies</th>";
+echo "<th>Image</th>";
+echo "<th>Subtitles</th>";
+echo "<th>Duration</th>";
+echo "<th>Format</th>";
+echo "<th>Media</th>";
+echo "</tr>";
+foreach($results as $result){
+echo "<tr>";
+echo "<td>".$result->Language."</td>";
+echo "<td>".$result->Language_Tracks."</td>";
+echo "<td>".$result->Original_Title."</td>";
+echo "<td>".$result->English_Title."</td>";
+echo "<td>".$result->Call_Number."</td>";
+echo "<td>".$result->Director."</td>";
+echo "<td>".$result->Year."</td>";
+echo "<td>".$result->Copies."</td>";
+echo "<td>".$result->Image."</td>";
+echo "<td>".$result->Subtitles."</td>";
+echo "<td>".$result->Duration."</td>";
+echo "<td>".$result->Format."</td>";
+echo "<td>".$result->Media."</td>";
+echo "</tr>";
+}
+echo "</table>";
+echo 'end of search';
+}
+[/php]
